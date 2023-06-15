@@ -1,0 +1,735 @@
+{
+	"info": {
+		"_postman_id": "ff1125e3-f1e2-4887-a968-635092f7bb6d",
+		"name": "Public DevAPI Calls",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Create Accounts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseBody = pm.response.json()",
+									"",
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a list of created accounts\", () => {",
+									"    pm.expect(responseBody.Accounts).to.exist;",
+									"    pm.expect(responseBody.Accounts).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Accounts[0].accountId).to.exist;",
+									"    pm.expect(responseBody.Accounts[0].accountId).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Accounts[0].developerId).to.exist;",
+									"    pm.expect(responseBody.Accounts[0].developerId).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Accounts[0].currencyCode).to.exist;",
+									"    pm.expect(responseBody.Accounts[0].currencyCode).not.eq(undefined);",
+									"})",
+									"",
+									"const openAccounts = responseBody.Accounts.filter(val => {",
+									"    return val.state == \"open\"",
+									"})",
+									"",
+									"if(openAccounts.length >= 1) {    ",
+									"    pm.environment.set(\"accountID\", openAccounts[0].accountId)",
+									"    console.log(\"open account created, accountID set to: \", openAccounts[0].accountId)",
+									"} else {",
+									"    postman.setNextRequest(pm.info.requestName) //retry when running in a collection, if we don't have an open account. ",
+									"    console.log(\"No open accounts returned\")",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"quantity\":\"3\",\"currentBalance\":\"12\",\"startingBalance\":\"10\"}"
+						},
+						"url": {
+							"raw": "{{serviceURL}}/accounts/create",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"accounts",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Accounts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a list of created accounts\", () => {",
+									"    const responseBody = pm.response.json()",
+									"",
+									"    pm.expect(responseBody.Accounts).to.exist;",
+									"    pm.expect(responseBody.Accounts).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Accounts[0].accountId).to.exist;",
+									"    pm.expect(responseBody.Accounts[0].accountId).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Accounts[0].developerId).to.exist;",
+									"    pm.expect(responseBody.Accounts[0].developerId).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Accounts[0].currencyCode).to.exist;",
+									"    pm.expect(responseBody.Accounts[0].currencyCode).not.eq(undefined);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{serviceURL}}/accounts",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a single created account\", () => {",
+									"    const responseBody = pm.response.json()",
+									"",
+									"    pm.expect(responseBody.Accounts).to.exist;",
+									"    pm.expect(responseBody.Accounts).not.eq(undefined);",
+									"    pm.expect(responseBody.Accounts.length).to.eql(1);",
+									"",
+									"    pm.expect(responseBody.Accounts[0].accountId).to.exist;",
+									"    pm.expect(responseBody.Accounts[0].accountId).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Accounts[0].developerId).to.exist;",
+									"    pm.expect(responseBody.Accounts[0].developerId).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Accounts[0].currencyCode).to.exist;",
+									"    pm.expect(responseBody.Accounts[0].currencyCode).not.eq(undefined);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{serviceURL}}/accounts/{{accountID}}",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"accounts",
+								"{{accountID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "Create Transactions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseBody = pm.response.json()",
+									"",
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a list of created accounts\", () => {",
+									"    pm.expect(responseBody.Transactions).to.exist;",
+									"    pm.expect(responseBody.Transactions).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].currency).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].currency).not.eq(undefined);",
+									"})",
+									"",
+									"const transactionUUID = responseBody.Transactions[0].transactionUUID",
+									"pm.environment.set(\"transactionID\", transactionUUID)",
+									"console.log(\"transactionID set to: \", transactionUUID)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"quantity\":\"3\"}"
+						},
+						"url": {
+							"raw": "{{serviceURL}}/transactions/accounts/{{accountID}}/create",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"transactions",
+								"accounts",
+								"{{accountID}}",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Transactions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a list of created accounts\", () => {",
+									"    const responseBody = pm.response.json()",
+									"    pm.expect(responseBody.Transactions).to.exist;",
+									"    pm.expect(responseBody.Transactions).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].currency).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].currency).not.eq(undefined);",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{serviceURL}}/transactions/accounts/{{accountID}}/transactions",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"transactions",
+								"accounts",
+								"{{accountID}}",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction By ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a single created account\", () => {",
+									"    const responseBody = pm.response.json()",
+									"",
+									"    pm.expect(responseBody.transactionUUID).to.exist;",
+									"    pm.expect(responseBody.transactionUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.accountUUID).to.exist;",
+									"    pm.expect(responseBody.accountUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.merchantUUID).to.exist;",
+									"    pm.expect(responseBody.merchantUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.currency).to.exist;",
+									"    pm.expect(responseBody.currency).not.eq(undefined);",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{serviceURL}}/transactions/accounts/{{accountID}}/transactions/{{transactionID}}",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"transactions",
+								"accounts",
+								"{{accountID}}",
+								"transactions",
+								"{{transactionID}}"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fraud",
+			"item": [
+				{
+					"name": "POST Fraud Random",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a list of created accounts\", () => {",
+									"    const responseBody = pm.response.json()",
+									"    pm.expect(responseBody.Transactions).to.exist;",
+									"    pm.expect(responseBody.Transactions).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].currency).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].currency).not.eq(undefined);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"fraud",
+								"transactions",
+								"accounts",
+								"{{accountID}}",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Fraud Unusually Large",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a list of created accounts\", () => {",
+									"    const responseBody = pm.response.json()",
+									"    pm.expect(responseBody.Transactions).to.exist;",
+									"    pm.expect(responseBody.Transactions).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].currency).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].currency).not.eq(undefined);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"fraudType\":\"unusuallyLarge\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"fraud",
+								"transactions",
+								"accounts",
+								"{{accountID}}",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Fraud Multiple Declined",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a list of created accounts\", () => {",
+									"    const responseBody = pm.response.json()",
+									"    pm.expect(responseBody.Transactions).to.exist;",
+									"    pm.expect(responseBody.Transactions).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].currency).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].currency).not.eq(undefined);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"fraudType\":\"multipleDeclined\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"fraud",
+								"transactions",
+								"accounts",
+								"{{accountID}}",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Overseas Spending",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a list of created accounts\", () => {",
+									"    const responseBody = pm.response.json()",
+									"    pm.expect(responseBody.Transactions).to.exist;",
+									"    pm.expect(responseBody.Transactions).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].transactionUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].accountUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].merchantUUID).not.eq(undefined);",
+									"",
+									"    pm.expect(responseBody.Transactions[0].currency).to.exist;",
+									"    pm.expect(responseBody.Transactions[0].currency).not.eq(undefined);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{api_version}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"fraudType\":\"overseasSpending\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create",
+							"host": [
+								"{{serviceURL}}"
+							],
+							"path": [
+								"fraud",
+								"transactions",
+								"accounts",
+								"{{accountID}}",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authJWT}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
