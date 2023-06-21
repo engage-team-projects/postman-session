@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "ff1125e3-f1e2-4887-a968-635092f7bb6d",
-		"name": "Public DevAPI Calls",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"_postman_id": "9ff093f6-3c3b-44e6-9639-7525be02dbae",
+		"name": "DevAPI Calls",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24023375"
 	},
 	"item": [
 		{
@@ -40,8 +41,8 @@
 									"})",
 									"",
 									"if(openAccounts.length >= 1) {    ",
-									"    pm.environment.set(\"accountID\", openAccounts[0].accountId)",
-									"    console.log(\"open account created, accountID set to: \", openAccounts[0].accountId)",
+									"    pm.collectionVariables.set(\"accountID\", openAccounts[0].accountId)",
+									"    console.log(\"open account created, accountID set to: \", pm.collectionVariables.get(\"accountID\"))",
 									"} else {",
 									"    postman.setNextRequest(pm.info.requestName) //retry when running in a collection, if we don't have an open account. ",
 									"    console.log(\"No open accounts returned\")",
@@ -61,24 +62,15 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"quantity\":\"3\",\"currentBalance\":\"12\",\"startingBalance\":\"10\"}"
+							"raw": "{\"quantity\":\"1\",\"state\":\"open\"}"
 						},
-						"url": {
-							"raw": "{{serviceURL}}/accounts/create",
-							"host": [
-								"{{serviceURL}}"
-							],
-							"path": [
-								"accounts",
-								"create"
-							]
-						}
+						"url": "{{serviceURL}}/accounts/create"
 					},
 					"response": []
 				},
@@ -123,17 +115,63 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
+								"type": "text"
+							}
+						],
+						"url": "{{serviceURL}}/accounts"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Accounts With Filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain no accounts\", () => {",
+									"    const responseBody = pm.response.json()",
+									"",
+									"    pm.expect(responseBody.Accounts).to.exist;",
+									"    pm.expect(responseBody.Accounts.length).eq(0);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{serviceURL}}/accounts",
+							"raw": "{{serviceURL}}/accounts?state=eq:closed",
 							"host": [
 								"{{serviceURL}}"
 							],
 							"path": [
 								"accounts"
+							],
+							"query": [
+								{
+									"key": "state",
+									"value": "eq:closed"
+								}
 							]
 						}
 					},
@@ -181,20 +219,11 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
-						"url": {
-							"raw": "{{serviceURL}}/accounts/{{accountID}}",
-							"host": [
-								"{{serviceURL}}"
-							],
-							"path": [
-								"accounts",
-								"{{accountID}}"
-							]
-						}
+						"url": "{{serviceURL}}/accounts/{{accountID}}"
 					},
 					"response": []
 				}
@@ -234,7 +263,7 @@
 									"})",
 									"",
 									"const transactionUUID = responseBody.Transactions[0].transactionUUID",
-									"pm.environment.set(\"transactionID\", transactionUUID)",
+									"pm.collectionVariables.set(\"transactionID\", transactionUUID)",
 									"console.log(\"transactionID set to: \", transactionUUID)"
 								],
 								"type": "text/javascript"
@@ -251,26 +280,15 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"quantity\":\"3\"}"
+							"raw": "{\"quantity\":\"1\"}"
 						},
-						"url": {
-							"raw": "{{serviceURL}}/transactions/accounts/{{accountID}}/create",
-							"host": [
-								"{{serviceURL}}"
-							],
-							"path": [
-								"transactions",
-								"accounts",
-								"{{accountID}}",
-								"create"
-							]
-						}
+						"url": "{{serviceURL}}/transactions/accounts/{{accountID}}/create"
 					},
 					"response": []
 				},
@@ -318,12 +336,56 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
+								"type": "text"
+							}
+						],
+						"url": "{{serviceURL}}/transactions/accounts/{{accountID}}/transactions"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Transactions With Filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return with status 200\", () => {",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"Response should contain a list of created accounts\", () => {",
+									"    const responseBody = pm.response.json();",
+									"    pm.expect(responseBody.Transactions).to.exist;",
+									"    if(responseBody.Transactions.length >= 1) {",
+									"        _.each(responseBody.Transactions, (transcation) => {",
+									"            pm.expect(transcation.currency).to.eq('GBP')",
+									"        });",
+									"    }",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{serviceURL}}/transactions/accounts/{{accountID}}/transactions",
+							"raw": "{{serviceURL}}/transactions/accounts/{{accountID}}/transactions?currency=eq:GBP",
 							"host": [
 								"{{serviceURL}}"
 							],
@@ -332,6 +394,12 @@
 								"accounts",
 								"{{accountID}}",
 								"transactions"
+							],
+							"query": [
+								{
+									"key": "currency",
+									"value": "eq:GBP"
+								}
 							]
 						}
 					},
@@ -379,7 +447,7 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
@@ -454,7 +522,7 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
@@ -467,19 +535,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create",
-							"host": [
-								"{{serviceURL}}"
-							],
-							"path": [
-								"fraud",
-								"transactions",
-								"accounts",
-								"{{accountID}}",
-								"create"
-							]
-						}
+						"url": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create"
 					},
 					"response": []
 				},
@@ -526,7 +582,7 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
@@ -539,19 +595,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create",
-							"host": [
-								"{{serviceURL}}"
-							],
-							"path": [
-								"fraud",
-								"transactions",
-								"accounts",
-								"{{accountID}}",
-								"create"
-							]
-						}
+						"url": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create"
 					},
 					"response": []
 				},
@@ -598,7 +642,7 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
@@ -611,19 +655,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create",
-							"host": [
-								"{{serviceURL}}"
-							],
-							"path": [
-								"fraud",
-								"transactions",
-								"accounts",
-								"{{accountID}}",
-								"create"
-							]
-						}
+						"url": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create"
 					},
 					"response": []
 				},
@@ -670,7 +702,7 @@
 							},
 							{
 								"key": "Version",
-								"value": "{{api_version}}",
+								"value": "{{apiVersion}}",
 								"type": "text"
 							}
 						],
@@ -683,19 +715,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create",
-							"host": [
-								"{{serviceURL}}"
-							],
-							"path": [
-								"fraud",
-								"transactions",
-								"accounts",
-								"{{accountID}}",
-								"create"
-							]
-						}
+						"url": "{{serviceURL}}/fraud/transactions/accounts/{{accountID}}/create"
 					},
 					"response": []
 				}
@@ -704,13 +724,9 @@
 	],
 	"auth": {
 		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "{{authJWT}}",
-				"type": "string"
-			}
-		]
+		"bearer": {
+			"token": "{{apiKey}}"
+		}
 	},
 	"event": [
 		{
@@ -730,6 +746,23 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apiKey",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "serviceURL",
+			"value": "https://sandbox.capitalone.co.uk/developer-services-platform-pr/api/data",
+			"type": "string"
+		},
+		{
+			"key": "apiVersion",
+			"value": "1.0",
+			"type": "string"
 		}
 	]
 }
